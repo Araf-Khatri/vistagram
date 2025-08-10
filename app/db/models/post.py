@@ -10,7 +10,12 @@ class Post(Base):
   # user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
   image_url = Column(String, nullable=False)
   caption = Column(String, nullable=True)
+  post_url = Column(String, nullable=False)
+  share_count = Column(Integer, default=0)
   created_at = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
   
   def to_dict(self):
-    return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    mapped_columns = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    mapped_columns["posted_by"] = self.user_id 
+    del mapped_columns["user_id"] 
+    return mapped_columns

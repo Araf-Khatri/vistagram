@@ -1,13 +1,16 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from .config import Config
-from .db import engine
-from .db.base import Base
-from .controllers.posts import posts_route
+from .controllers.posts import posts_routes
+from .controllers.auth import auth_routes
 
 app = Flask(__name__)
 
 app.config.from_object(Config)
-Base.metadata.create_all(bind=engine)
+app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
+jwt = JWTManager(app)
 
-posts_route(app)
+
+posts_routes(app)
+auth_routes(app)
 
