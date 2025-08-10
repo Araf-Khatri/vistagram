@@ -6,8 +6,7 @@ class Post(Base):
   __tablename__  = "posts"
   
   id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-  user_id = Column(Integer, nullable=False)
-  # user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+  user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
   image_url = Column(String, nullable=False)
   caption = Column(String, nullable=True)
   post_url = Column(String, nullable=False)

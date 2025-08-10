@@ -7,8 +7,8 @@ class User(Base):
   
   id = Column(Integer, autoincrement=True, primary_key=True, index=True)
   username = Column(String, unique=True, nullable=False)
-  created_at = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
   password = Column(String, nullable=False)  
+  created_at = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
 
   
   def to_dict(self):

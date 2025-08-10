@@ -30,7 +30,8 @@ def signup(request_body):
   user = User(username=username, password=hashed_password)
   db.add(user)
   db.commit()
-  return success_response(user.to_dict(), "User created successfully", 201)
+  access_token = create_access_token(identity=str(user.id))
+  return success_response({"access_token": access_token}, "User created successfully", 201)
 
 @blueprint.route('/login', methods=['POST'])
 @post_request_mapper
