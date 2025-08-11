@@ -255,17 +255,3 @@ def redirect_post(post_url):
 
   return success_response(mapped_records[0], "Share count updated successfully")
 
-
-@blueprint.route("/update", methods=["POST"])
-def update():
-  posts = db.query(Post).all()
-  idx = 0
-  N = len(data)
-  for post in posts:
-    post.image_url = data[idx % N]["image"]
-    post.caption = data[idx % N]["caption"]
-    idx += 1
-  
-  db.commit()
-  
-  return success_response("Share link generated successfully")
