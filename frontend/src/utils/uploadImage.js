@@ -1,23 +1,20 @@
-import { v2 as cloudinary } from "cloudinary";
-const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
-  import.meta.env;
+import axios from "axios";
+const { VITE_CLOUDINARY_CLOUD_NAME } = import.meta.env;
 
-cloudinary.config({
-  cloud_name: CLOUDINARY_CLOUD_NAME,
-  api_key: CLOUDINARY_API_KEY,
-  api_secret: CLOUDINARY_API_SECRET,
-});
-
-const uploadImage = async (filePath) => {
+const uploadImage = async (file) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: "posts",
-      unique_filename: true,
-    });
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "vistagram_images");
 
-    console.log("Image URL:", result.secure_url);
+    const result = await axios.post(
+      `https://api.cloudinary.com/v1_1/${VITE_CLOUDINARY_CLOUD_NAME}/upload`,
+      formData
+    );
+    return result.data.url;
   } catch (error) {
     console.error("Upload failed:", error);
+    throw new Error("File not uploaded");
   }
 };
 

@@ -1,44 +1,85 @@
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
-const Authentication = ({ type }) => {
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+`;
+
+const InnerStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const Heading = styled.h1`
+  color: teal;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+`;
+
+const FormWrapper = styled.div`
+  min-width: 100%;
+
+  @media (min-width: 768px) {
+    min-width: 700px;
+  }
+`;
+
+const TextBox = styled.div`
+  color: black;
+  font-size: 0.95rem;
+
+  a {
+    color: teal;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+export default function Authentication({ type }) {
   return (
-    <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      backgroundColor="white"
-      color={"black"}
-      justifyContent="center"
-      alignItems="center"
-      padding={"1rem"}
-    >
-      <Stack>
-        <Heading color="teal.900">Welcome</Heading>
-        <Box minW={{ base: "100%", md: "700px" }}>
+    <Container>
+      <InnerStack>
+        <Heading>Welcome</Heading>
+        <FormWrapper>
           {type === "login" && <LoginForm />}
           {type === "signup" && <SignupForm />}
-        </Box>
-      </Stack>
+        </FormWrapper>
+      </InnerStack>
+
       {type === "login" && (
-        <Box color={"black"}>
+        <TextBox>
           New to us?{" "}
-          <Link color="teal.900" to="/signup">
+          <Link to="/signup" replace>
             Sign Up
           </Link>
-        </Box>
+        </TextBox>
       )}
+
       {type === "signup" && (
-        <Box color={"black"}>
+        <TextBox>
           Already have an account?{" "}
-          <Link color="teal.900" to="/login">
+          <Link to="/login" replace>
             Login
           </Link>
-        </Box>
+        </TextBox>
       )}
-    </Flex>
+    </Container>
   );
-};
-
-export default Authentication;
+}

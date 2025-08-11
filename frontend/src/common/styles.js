@@ -7,6 +7,11 @@ export const FormContainer = styled.form`
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 1rem;
+    margin: 0;
+  }
 `;
 
 export const FieldGroup = styled.div`
@@ -28,10 +33,14 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   outline: none;
+  width: -webkit-fill-available;
 
   &:focus {
     border-color: teal;
     box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.2);
+  }
+
+  @media (max-width: 768px) {
   }
 `;
 

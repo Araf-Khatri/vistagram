@@ -14,12 +14,7 @@ app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=Config.JWT_ACCESS_TOKEN_EXPIRES_DAYS) 
 jwt = JWTManager(app)
 
-CORS(
-    app
-    # resources={r"/*": {"origins": ["*"]}},
-    # supports_credentials=True,
-    # allow_headers=["Content-Type", "Authorization", "Accept"]
-)
+CORS(app, supports_credentials=True, origins=["*"])
 
 # @app.after_request
 # def after_request(response):

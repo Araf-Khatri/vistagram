@@ -1,6 +1,7 @@
 from flask import Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token 
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
 from app.db.models.user import User
 from app.utils.request_mapper import post_request_mapper
@@ -30,8 +31,11 @@ def signup(request_body):
   user = User(username=username, password=hashed_password)
   db.add(user)
   db.commit()
+
   access_token = create_access_token(identity=str(user.id))
-  return success_response({"access_token": access_token}, "User created successfully", 201)
+  user_dict = user.to_dict()
+
+  return success_response({"access_token": access_token, "username": user_dict["username"], "id": user_dict["id"]}, "User created successfully", 201)
 
 @blueprint.route('/login', methods=['POST'])
 @post_request_mapper
@@ -40,10 +44,26 @@ def login(request_body):
   password = request_body.get('password')
 
   user = db.query(User).filter_by(username=username).scalar()
-  
   if not user or not check_password_hash(user.password, password):
     return error_response("Invalid username or password", 401)
 
-  access_token = create_access_token(identity=str(user.id))
-  return success_response({'access_token': access_token}, "Login successful", 200)
+  user_dict = user.to_dict()
 
+  access_token = create_access_token(identity=str(user.id))
+  return success_response({"access_token": access_token, "username": user_dict["username"], "id": user_dict["id"]}, "Login successful", 200)
+
+@blueprint.route("/me", methods=["GET"])
+@jwt_required()
+def user_info():
+  user_id = get_jwt_identity()
+  user_record = db.query(User).filter(User.id == user_id).first()
+
+  if not user_record:
+    return error_response("User not found", 401)
+
+  user = {
+    "id": user_record.id,
+    "username": user_record.username
+  }
+
+  return success_response(user)

@@ -5,7 +5,7 @@ import {
   FormContainer,
   Input,
   Label,
-} from "@/common/formStyles";
+} from "@/common/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginHandler } from "./handlers";

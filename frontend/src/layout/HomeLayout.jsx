@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { ErrorMessage } from "@/common/styles";
+import { getLoggedInUser } from "@/components/Auth/handlers";
+import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Links = ["Dashboard", "Projects", "Team"];
+const AppContainer = styled.div`
+  position: relative;
+`;
 
 const Navbar = styled.nav`
+  top: 0;
+  position: sticky;
   background: ${({ theme }) => theme.bg || "#f7f7f7"};
   padding: 0.5rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -18,7 +25,7 @@ const NavContainer = styled.div`
   height: 64px;
 `;
 
-const Logo = styled.div`
+const Username = styled.div`
   font-weight: bold;
 `;
 
@@ -74,19 +81,51 @@ const PageContent = styled.main`
   padding: 1rem;
 `;
 
+const links = [
+  { label: "Posts", path: "/" },
+  { label: "Create Post", path: "/create" },
+];
+
 export default function HomeLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState({
+    username: null,
+    id: null,
+  });
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    getUserDetail();
+  }, []);
+
+  const getUserDetail = async () => {
+    try {
+      setLoading(true);
+      const userDetails = await getLoggedInUser();
+      setUserDetails(userDetails);
+    } catch (err) {
+      setErrorMessage("Unable to find username");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
+    <AppContainer>
       <Navbar>
         <NavContainer>
-          <Logo>Logo</Logo>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {loading ? (
+            <span>fetching username...</span>
+          ) : (
+            <Username>{userDetails.username}</Username>
+          )}
           <NavLinks>
-            {Links.map((link) => (
-              <NavLink href="#" key={link}>
-                {link}
-              </NavLink>
+            {links.map(({ label, path }) => (
+              <Link to={path} key={path}>
+                {label}
+              </Link>
             ))}
           </NavLinks>
           <IconButton onClick={() => setIsOpen(!isOpen)}>
@@ -97,10 +136,10 @@ export default function HomeLayout({ children }) {
         {isOpen && (
           <MobileMenu>
             <MobileLinks>
-              {Links.map((link) => (
-                <NavLink href="#" key={link}>
-                  {link}
-                </NavLink>
+              {links.map(({ label, path }) => (
+                <Link to={path} key={path}>
+                  {label}
+                </Link>
               ))}
             </MobileLinks>
           </MobileMenu>
@@ -108,6 +147,6 @@ export default function HomeLayout({ children }) {
       </Navbar>
 
       <PageContent>{children}</PageContent>
-    </>
+    </AppContainer>
   );
 }

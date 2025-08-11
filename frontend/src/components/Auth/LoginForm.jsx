@@ -4,7 +4,7 @@ import {
   FormContainer,
   Input,
   Label,
-} from "@/common/formStyles";
+} from "@/common/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginHandler } from "./handlers";
@@ -35,12 +35,12 @@ export default function LoginForm() {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <FieldGroup>
-        <Label htmlFor="username">Username</Label>
+        <Label htmlFor="username">Username:*</Label>
         <Input placeholder="Username" name="username" type="text" required />
       </FieldGroup>
 
       <FieldGroup>
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Password:*</Label>
         <Input
           placeholder="Password"
           name="password"
