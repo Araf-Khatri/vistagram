@@ -24,7 +24,7 @@ export default function LoginForm() {
       };
 
       await loginHandler(credentials);
-      navigate("/", { replace: true });
+      setTimeout(() => navigate("/", { replace: true }), 500);
     } catch (err) {
       console.error("Login failed:", err);
     } finally {

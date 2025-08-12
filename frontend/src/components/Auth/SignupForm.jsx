@@ -11,9 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { signupHandler } from "./handlers";
 
 export default function SignupForm() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     try {
@@ -35,7 +35,7 @@ export default function SignupForm() {
       };
 
       await signupHandler(credentials);
-      navigate("/", { replace: true });
+      setTimeout(() => navigate("/", { replace: true }), 500);
     } catch (err) {
       console.error("Signup failed:", err);
     } finally {
