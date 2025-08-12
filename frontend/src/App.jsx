@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Authentication from "./components/Auth";
 import CreatePost from "./components/Posts/CreatePost";
 import PostListing from "./components/Posts/PostListing";
@@ -26,15 +26,13 @@ function App() {
           <Route path="/signup" element={<Authentication type="signup" />} />
         </Routes>
       )}
-
-      <HomeLayout>
-        <Routes>
+      <Routes>
+        <Route element={<HomeLayout />}>
           <Route path="/create" element={<CreatePost />} />
           <Route path="/shared/:post_url" element={<SharedPost />} />
           <Route path="/" element={<PostListing />} />
-          <Route path="*" element={<Navigate to={"/"} />} />
-        </Routes>
-      </HomeLayout>
+        </Route>
+      </Routes>
     </>
   );
 }

@@ -22,4 +22,15 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) =>
+    new Promise((_, reject) => {
+      if (error.response && error.response.status === 401) {
+        window.location.href = "/login";
+      }
+      reject(error);
+    })
+);
+
 export default axiosInstance;

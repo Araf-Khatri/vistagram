@@ -4,7 +4,7 @@ import { urls } from "@/utils/urls";
 
 export const loginHandler = catchAsync(async (loginCredentials) => {
   const response = await axiosInstance.post(urls.login, loginCredentials);
-
+  console.log(response);
   const token = response.data.data.access_token;
   localStorage.setItem(API_TOKEN_KEY, token);
 });

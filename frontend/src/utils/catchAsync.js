@@ -5,6 +5,7 @@ const catchAsync = (fn) => {
     fn(...params)
       .then((res) => res)
       .catch((error) => {
+        console.log(error.response);
         if (error.response.status === 401) {
           localStorage.removeItem(API_TOKEN_KEY);
         } else {

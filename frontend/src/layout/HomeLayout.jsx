@@ -3,7 +3,7 @@ import { getLoggedInUser } from "@/components/Auth/handlers";
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
 
 const AppContainer = styled.div`
@@ -86,7 +86,7 @@ const links = [
   { label: "Create Post", path: "/create" },
 ];
 
-export default function HomeLayout({ children }) {
+export default function HomeLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const [userDetails, setUserDetails] = useState({
     username: null,
@@ -146,7 +146,9 @@ export default function HomeLayout({ children }) {
         )}
       </Navbar>
 
-      <PageContent>{children}</PageContent>
+      <PageContent>
+        <Outlet />
+      </PageContent>
     </AppContainer>
   );
 }
