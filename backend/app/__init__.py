@@ -5,10 +5,14 @@ from flask_jwt_extended import JWTManager
 from .config import Config
 from .controllers.posts import posts_routes
 from .controllers.auth import auth_routes
+from .db.base import Base
+from .db import engine
 
 app = Flask(__name__)
 
 app.config.from_object(Config)
+
+Base.metadata.create_all(engine)
 
 app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=Config.JWT_ACCESS_TOKEN_EXPIRES_DAYS) 
