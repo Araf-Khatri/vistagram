@@ -14,7 +14,9 @@ $ npm run start
 Backend:
 
 ```
-$ install docker
+$ cd backend
+install docker
+$ docker pull postgres
 $ docker run --name vistagram-postgres-db -e POSTGRES_PASSWORD=adminaccess4postg -d postgres
 $ . .venv/bin/activate
 $ pip install -r requirements.txt
