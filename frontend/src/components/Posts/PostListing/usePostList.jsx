@@ -19,9 +19,9 @@ const usePostList = () => {
       async (entries) => {
         entries.forEach(async (entry) => {
           if (entry.isIntersecting) {
+            const totalPage = Math.ceil(metadata?.total_records / LIMIT);
             setPage((prevPage) => {
-              const totalPage = Math.ceil(metadata?.total_records / LIMIT);
-              if (prevPage == totalPage) return prevPage;
+              if (prevPage >= totalPage) return prevPage;
               return prevPage + 1;
             });
           }
