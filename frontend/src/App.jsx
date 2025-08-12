@@ -14,32 +14,27 @@ function App() {
   useEffect(() => {
     const tokenExists = localStorage.getItem(API_TOKEN_KEY) || null;
     setToken(tokenExists);
-    // if (!tokenExists) {
-    //   navigate("/login", { replace: true });
-    // }
   }, [navigate]);
 
   return (
     <>
       {/* <Route path="/posts" element={<Auth />} /> */}
-      {!token ? (
-        <>
-          <Routes>
-            <Route path="/login" element={<Authentication type="login" />} />
-            <Route path="/signup" element={<Authentication type="signup" />} />
-            <Route path="*" element={<Navigate to={"/login"} />}></Route>
-          </Routes>
-        </>
-      ) : (
-        <HomeLayout>
-          <Routes>
-            <Route path="/shared/:post_url" element={<SharedPost />} />
-            <Route path="/create" element={<CreatePost />} />
-            <Route path="/" element={<PostListing />} />
-            <Route path="*" element={<Navigate to={"/"} />}></Route>
-          </Routes>
-        </HomeLayout>
+
+      {!token && (
+        <Routes>
+          <Route path="/login" element={<Authentication type="login" />} />
+          <Route path="/signup" element={<Authentication type="signup" />} />
+        </Routes>
       )}
+
+      <HomeLayout>
+        <Routes>
+          <Route path="/create" element={<CreatePost />} />
+          <Route path="/shared/:post_url" element={<SharedPost />} />
+          <Route path="/" element={<PostListing />} />
+          <Route path="*" element={<Navigate to={"/"} />} />
+        </Routes>
+      </HomeLayout>
     </>
   );
 }

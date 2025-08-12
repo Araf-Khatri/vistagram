@@ -10,13 +10,10 @@ export const loginHandler = catchAsync(async (loginCredentials) => {
 });
 
 export const signupHandler = catchAsync(async (signupCredentials) => {
-  const { username, password } = signupCredentials;
+  const response = await axiosInstance.post(urls.signup, signupCredentials);
 
-  const response = await axiosInstance.post(urls.signup, {
-    body: JSON.stringify({ username, password }),
-  });
-
-  localStorage.setItem(API_TOKEN_KEY, response.data.access_token);
+  const token = response.data.data.access_token;
+  localStorage.setItem(API_TOKEN_KEY, token);
 });
 
 export const getLoggedInUser = catchAsync(async () => {

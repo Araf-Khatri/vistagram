@@ -8,7 +8,7 @@ import {
 } from "@/common/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginHandler } from "./handlers";
+import { signupHandler } from "./handlers";
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function SignupForm() {
         password: event.target.password.value,
       };
 
-      await loginHandler(credentials);
+      await signupHandler(credentials);
       navigate("/", { replace: true });
     } catch (err) {
       console.error("Signup failed:", err);
