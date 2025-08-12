@@ -29,7 +29,7 @@ const Loading = styled.div`
   color: gray;
 `;
 
-const EndScreen = styled.div`
+const Observer = styled.div`
   height: 1px;
   width: 100%;
 `;
@@ -65,7 +65,7 @@ export default function Posts() {
         ))}
       </Stack>
       {loading && <Loading />}
-      {!loading && <EndScreen ref={setRef} />}
+      {!loading && <Observer ref={setRef} />}
     </PostsContainer>
   );
 }

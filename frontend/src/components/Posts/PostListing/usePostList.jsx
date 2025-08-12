@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { fetchPosts, updatePostLike } from "../handlers";
 
-const LIMIT = 10;
+const LIMIT = 5;
 const usePostList = () => {
   const [posts, setPosts] = useState([]);
   const [metadata, setMetadata] = useState(null);
@@ -41,7 +41,7 @@ const usePostList = () => {
   const loadPosts = async (page) => {
     setLoading(true);
     try {
-      const response = await fetchPosts(page);
+      const response = await fetchPosts(page, LIMIT);
       const newPosts = response.records;
       const metadata = response.metadata;
       setMetadata(metadata);
