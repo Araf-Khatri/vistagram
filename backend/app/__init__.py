@@ -18,7 +18,9 @@ app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=Config.JWT_ACCESS_TOKEN_EXPIRES_DAYS) 
 jwt = JWTManager(app)
 
-CORS(app, supports_credentials=True, origins=["*"])
+CORS(app, supports_credentials=True, origins=[
+  "https://vistagram-by-araf.netlify.app/"
+])
 
 # @app.after_request
 # def after_request(response):
