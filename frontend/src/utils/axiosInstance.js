@@ -27,7 +27,8 @@ axiosInstance.interceptors.response.use(
   (error) =>
     new Promise((_, reject) => {
       if (error.response && error.response.status === 401) {
-        window.location.href = "/login";
+        const pathname = window.location.pathname;
+        if (pathname !== "/login") window.location.href = "/login";
         localStorage.removeItem(API_TOKEN_KEY);
       }
       reject(error);
