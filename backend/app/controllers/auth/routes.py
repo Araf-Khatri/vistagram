@@ -2,6 +2,7 @@ from flask import Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token 
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.exc import IntegrityError
 from app.db import db
 from app.db.models.user import User
 from app.utils.request_mapper import post_request_mapper
@@ -15,27 +16,29 @@ blueprint = Blueprint('auth', __name__)
 def signup(request_body):
   username = request_body.get('username')
   password = request_body.get('password')
-  print(f"Password length: {password}")
+
   password_length = len(password.strip())
-  print(f"Password length: {password_length}")
 
   if not username or not password:
     return error_response("'username' or 'password' field missing", 400)
   if password_length < 6:
     return error_response("Password must be at least 6 characters long", 400)
   
-  if db.query(User).filter(User.username == username).first():
-    return error_response("Username already exists", 409)
 
   hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
   user = User(username=username, password=hashed_password)
-  db.add(user)
-  db.commit()
+  try:
+    db.add(user)
+    db.commit()
 
-  access_token = create_access_token(identity=str(user.id))
-  user_dict = user.to_dict()
+    access_token = create_access_token(identity=str(user.id))
+    user_dict = user.to_dict()
 
-  return success_response({"access_token": access_token, "username": user_dict["username"], "id": user_dict["id"]}, "User created successfully", 201)
+    return success_response({"access_token": access_token, "username": user_dict["username"], "id": user_dict["id"]}, "User created successfully", 201)
+  except:
+    db.rollback()
+    return error_response("Username already exists")
+  
 
 @blueprint.route('/login', methods=['POST'])
 @post_request_mapper
