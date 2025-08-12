@@ -32,7 +32,7 @@ const usePostList = () => {
     if (ref) {
       intersectionObserver.observe(ref);
     }
-  }, [ref]);
+  }, [ref, metadata?.total_records]);
 
   useEffect(() => {
     loadPosts(page);
