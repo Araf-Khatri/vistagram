@@ -15,7 +15,10 @@ Backend:
 
 ```
 $ install docker
-$ docker run --name some-postgres -e POSTGRES_PASSWORD=adminaccess4postg -d postgres
+$ docker run --name vistagram-postgres-db -e POSTGRES_PASSWORD=adminaccess4postg -d postgres
+$ . .venv/bin/activate
+$ pip install -r requirements.txt
+$ flask --app run.py run
 
 ```
 
