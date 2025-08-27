@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime, timezone
-from ..base import Base
+from ...db import db
 
-class PostLikes(Base):
+class PostLikes(db.Model):
   __tablename__  = "post_likes"
   
   id = Column(Integer, autoincrement=True, primary_key=True, index=True)

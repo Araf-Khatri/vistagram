@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime, timezone
-from ..base import Base
+from ...db import db
 
-class SharedPostClick(Base):
+class SharedPostClick(db.Model):
   __tablename__  = "shared_post_clicks"
   
   id = Column(Integer, autoincrement=True, primary_key=True, index=True)
