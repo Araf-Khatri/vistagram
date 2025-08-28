@@ -5,7 +5,7 @@ from app.db import session
 from app.utils.response_mapper import success_response, error_response
 
 
-class UserController:
+class UserService:
   def get_logged_in_user_info(self):
     user_id = get_jwt_identity()
     user_record = session.query(User).filter(User.id == user_id).first()
@@ -22,4 +22,4 @@ class UserController:
   
 
   
-user_service = UserController()
+user_service = UserService()

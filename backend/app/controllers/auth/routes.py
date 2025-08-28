@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from app.utils.request_mapper import post_request_mapper
 from app.services.auth_service import auth_service
-from app.services.users_service import user_service
+from app.services.user_service import user_service
 
 blueprint = Blueprint('auth', __name__)
 

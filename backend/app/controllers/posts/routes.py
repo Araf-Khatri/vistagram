@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from app.services.auth_service import auth_service
-from app.services.posts_service import post_service
+from app.services.post_service import post_service
 from app.utils.request_mapper import post_request_mapper
 
 

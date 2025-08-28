@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import request
 from sqlalchemy import or_
 from functools import wraps
 from flask_jwt_extended import create_access_token 
@@ -7,10 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.db import session
 from app.db.models.user import User
-
 from app.utils.response_mapper import success_response, error_response
 
-class AuthController:
+class AuthService:
   def protect_request(self, function):
     @wraps(function)
     @jwt_required()
@@ -127,4 +126,4 @@ class AuthController:
 
 
 
-auth_service = AuthController()
+auth_service = AuthService()

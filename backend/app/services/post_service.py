@@ -7,7 +7,7 @@ from app.utils.map_query_params import map_query_params
 from app.utils.response_mapper import success_response, error_response
 from app.utils.shareable_url import generate_shareable_url, decode_shareable_url
 
-class PostController:
+class PostService:
   def get_posts(self):
     user_id = int(get_jwt_identity())
     expected_params = {
@@ -273,4 +273,4 @@ class PostController:
 
 
 
-post_service = PostController()
+post_service = PostService()
