@@ -26,13 +26,8 @@ class AuthService:
         user = session.query(User).filter_by(id=user_id).first()
         if not user:
           return error_response("User not found", 404)
-        
-        if not user.access_token:
-          user.access_token = access_token
-          session.add(user)
-          session.commit()
 
-        if user.access_token != access_token:
+        if not user.access_token or user.access_token != access_token:
           return error_response("Token revoked or invalid", 401)
 
         return function(*args, **kwargs)
