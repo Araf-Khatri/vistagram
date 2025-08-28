@@ -1,10 +1,8 @@
-import json
-from sqlalchemy import func, case, and_, select
+from sqlalchemy import func, case, select
 from flask_jwt_extended import get_jwt_identity
 
 from app.db import session
 from app.db.models import Post, PostLikes, SharedPostClick, User
-from app.redis import redis_client
 from app.utils.map_query_params import map_query_params
 from app.utils.response_mapper import success_response, error_response
 from app.utils.shareable_url import generate_shareable_url, decode_shareable_url
@@ -57,7 +55,7 @@ class PostController:
     )
 
     shared_post_count = (
-      select(SharedPostClick.post_id.label("post_id"), func.count(SharedPostClick.user_id).label("share_count"))
+      select(SharedPostClick.post_id.label("post_id"), func.count(SharedPostClick.viewed_by).label("share_count"))
       .group_by(SharedPostClick.post_id).subquery()
     )
 
@@ -65,7 +63,6 @@ class PostController:
         Post.id,
         Post.image_url, 
         Post.caption, 
-        Post.post_url,
         Post.created_at,
         likes_count.c.likes_count.label("likes"), 
       case(( users.c.id == user_id,
@@ -96,14 +93,13 @@ class PostController:
           "id": post_id,
           "image_url": image_url,
           "caption": caption,
-          "post_url": post_url,
           "created_at": created_at,
           "likes_count": likes_count or 0,     
           "share_count": share_count or 0,
           "posted_by": posted_by,
           "liked_by_user": bool(liked_by_user)
       }
-      for post_id, image_url, caption, post_url, created_at, likes_count, posted_by, share_count, liked_by_user in records
+      for post_id, image_url, caption, created_at, likes_count, posted_by, share_count, liked_by_user in records
     ]
 
     return success_response({
@@ -119,7 +115,6 @@ class PostController:
   def create_post(self, request_body):
     image = request_body.get("image")
     caption = request_body.get("caption", None)
-    # post_url = generate_sharable_id()
     user_id = get_jwt_identity()  
 
     if not image or not user_id or not caption:
@@ -161,11 +156,15 @@ class PostController:
 
 
   def create_sharable_link(self, post_id):
-    user_id = 1 or int(get_jwt_identity())
+    user_id = int(get_jwt_identity())
     sharable_link_details = {
       "post_id": post_id,
       "user_id": user_id
     }
+    try:
+      session.query(Post).filter(post_id == Post.id).one()
+    except:
+      return error_response("Cannot create post sharable url, Post not found", 422)
 
     post_link = generate_shareable_url(sharable_link_details)
     return success_response({ "link": post_link })
@@ -176,84 +175,89 @@ class PostController:
     loggedin_user_id = int(get_jwt_identity())
     decode_url = decode_shareable_url(post_url)
     if not decode_url:
-      return error_response("Shared url not found", 400)
+      return error_response("Invalid shared url", 400)
     
     post_id = decode_url["post_id"]
     shared_by_user = decode_url["shared_by_user"]
 
-    cached_post = redis_client.get(post_url) or None
-
-    users = (
-      select(User.id.label("id"), User.username.label("posted_by")).filter(User.id == loggedin_user_id)
-      .subquery()
-    )
-
-    post_shared_by = (
-      select(User.id.label("user_id"), User.username)
-      .filter(User.id == shared_by_user)
-      .subquery()
-    )
-
-    if cached_post == None:
-      try:
-        query = (session.query(
-            Post.id,
-            Post.image_url, 
-            Post.caption, 
-            case(( users.c.id == loggedin_user_id, 
-              func.concat(users.c.posted_by, " (You)")
-            ), else_=users.c.posted_by).label("posted_by"),  
-            post_shared_by.c.username.label("shared_by"),
-          )
-          .join(users, users.c.id == Post.user_id)
-          .outerjoin(post_shared_by, post_shared_by.c.user_id == Post.user_id)
-          .filter(Post.id == post_id)
-        ).one()
-
-        post_id, image_url, caption, posted_by, shared_by = query
-        record = {
-          "id": post_id,
-          "image_url": image_url,
-          "caption": caption,
-          "posted_by": posted_by,
-          "shared_by": shared_by,
-        }
-        json_record = json.dumps(record)
-
-        #         secs * hours * 24hours * days (7days)
-        cached_record_ttl = 60 * 60 * 24 * 7
-        redis_client.set(post_url, json_record, ex=cached_record_ttl)
-      except:
-        return error_response("Post not found", 422)
-    else:
-      record = json.loads(cached_post)
-
-    post_likes = (
+    post_likes_sq = (
       select(
-          func.count(PostLikes.user_id).label("likes_count")
+        func.count(PostLikes.user_id)
       ).filter(PostLikes.post_id == post_id)
       .group_by(PostLikes.post_id)
+      .correlate(Post)
+      .scalar_subquery()
+      .label("likes_count")
     )
 
-    post_shared_count = (
-      select(func.count(SharedPostClick.post_id).label("share_count"))
-      .filter(SharedPostClick.post_id == post_id)
-      .group_by(SharedPostClick.post_id)
+    post_shares_sq = (
+      select(func.count(SharedPostClick.post_id))
+      .where(SharedPostClick.post_id == Post.id)
+      .correlate(Post)
+      .scalar_subquery()
+      .label("share_count")
     )
 
-    user_liked_post = (
-      select(func.max(1).label("liked_by_user"))
-      .filter(PostLikes.user_id == loggedin_user_id).filter(PostLikes.post_id == post_id)
-      .group_by(PostLikes.post_id)
+    liked_by_user_sq = (
+      select(func.max(1))
+      .where(PostLikes.post_id == Post.id, PostLikes.user_id == loggedin_user_id)
+      .correlate(Post)
+      .scalar_subquery()
+      .label("liked_by_user")
     )
 
-    likes_count = session.execute(post_likes).scalar()
-    share_count = session.execute(post_shared_count).scalar()
-    liked_by_user = session.execute(user_liked_post).scalar()
+    posted_by_user_sq = (
+      select(
+        case(
+          (Post.user_id == loggedin_user_id, func.concat(User.username, " (You)")),
+          else_=User.username
+        )
+      )
+      .where(User.id == Post.user_id)
+      .correlate(Post)      
+      .scalar_subquery()
+      .label("posted_by")
+    )
 
-    record["likes_count"] = likes_count or 0
-    record["share_count"] = share_count or 0
-    record["liked_by_user"] = bool(liked_by_user)     
+    shared_by_user_sq = (
+      select(
+        case(
+          (User.id == loggedin_user_id, func.concat(User.username, " (You)")),
+          else_=User.username
+        )
+      )
+      .where(User.id == shared_by_user)
+      .scalar_subquery()
+      .label("shared_by")
+    )
+
+    try:
+      query = (session.query(
+          Post.id,
+          Post.image_url, 
+          Post.caption, 
+          post_likes_sq,
+          post_shares_sq,
+          liked_by_user_sq,
+          posted_by_user_sq,
+          shared_by_user_sq,
+        )
+        .filter(Post.id == post_id)
+      ).one()
+
+      post_id, image_url, caption, likes_count, share_count, liked_by_user, posted_by, shared_by = query
+      record = {
+        "id": post_id,
+        "image_url": image_url,
+        "caption": caption,
+        "posted_by": posted_by,
+        "shared_by": shared_by,
+        "likes_count": likes_count or 0,
+        "share_count": share_count or 0,
+        "liked_by_user":  bool(liked_by_user)     
+      }
+    except:
+      return error_response("Post not found", 422)
 
     shared_post_viewed = (
       session.query(SharedPostClick)
@@ -270,4 +274,4 @@ class PostController:
 
 
 
-PostService = PostController()
+post_service = PostController()
