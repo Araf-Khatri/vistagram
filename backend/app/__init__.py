@@ -3,23 +3,21 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .config import Config
-from .controllers.posts import posts_routes
-from .controllers.auth import auth_routes
+from app.config import Config
+from app.routes.auth_routes import register_auth_routes
+from app.routes.posts_routes import register_posts_routes
 from app.db import db
 
 app = Flask(__name__)
 
 app.config.from_object(Config)
 
-# Base.metadata.create_all(engine)
 db.init_app(app)
 Migrate(app, db)
 with app.app_context():
   db.create_all()
 
-# try to hide this
-app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
+
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=Config.JWT_ACCESS_TOKEN_EXPIRES_DAYS) 
 jwt = JWTManager(app)
 
@@ -28,6 +26,5 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 
-posts_routes(app)
-
-auth_routes(app)
+register_auth_routes(app)
+register_posts_routes(app)

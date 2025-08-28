@@ -6,15 +6,25 @@ from app.services.user_service import user_service
 
 blueprint = Blueprint('auth', __name__)
 
+def register_auth_routes(app):
+  app.register_blueprint(blueprint, url_prefix="/v1/auth")
+
+
+
+# -------------------------
+# Auth Endpoints
+# -------------------------
+
 @blueprint.route('/signup', methods=['POST'])
+@post_request_mapper
 def signup(request_body):
   return auth_service.signup(request_body=request_body)
-  
+
 
 @blueprint.route('/login', methods=['POST'])
 @post_request_mapper
 def login(request_body):
- return auth_service.login(request_body=request_body)
+  return auth_service.login(request_body=request_body)
 
 
 @blueprint.route("/refresh_token", methods=["GET"])

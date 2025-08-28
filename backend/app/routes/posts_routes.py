@@ -4,8 +4,16 @@ from app.services.auth_service import auth_service
 from app.services.post_service import post_service
 from app.utils.request_mapper import post_request_mapper
 
-
 blueprint = Blueprint("posts", __name__)
+
+def register_posts_routes(app):
+  app.register_blueprint(blueprint, url_prefix="/v1/posts")
+
+
+
+# -------------------------
+# Post(s) Endpoints
+# -------------------------
 
 @blueprint.route("/", methods=["GET"], strict_slashes=False)
 @auth_service.protect_request
