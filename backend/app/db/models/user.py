@@ -18,4 +18,9 @@ class User(db.Model):
     self.created_at = created_at or datetime.now(timezone.utc)
 
   def to_dict(self):
-    return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    return {
+      "id": self.id,
+      "username": self.username,
+      "access_token": self.access_token,
+      "created_at": self.created_at.isoformat() if self.created_at else None,
+    }

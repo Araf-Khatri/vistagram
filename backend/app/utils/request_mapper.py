@@ -12,3 +12,4 @@ def post_request_mapper(function):
       return error_response("Request body must be a JSON object!", 400)
   
   return validator
+
