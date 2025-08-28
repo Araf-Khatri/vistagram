@@ -9,7 +9,7 @@ class User(db.Model):
   id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
   username: Mapped[str] = mapped_column(unique=True, nullable=False)
   password: Mapped[str] = mapped_column(nullable=False)
-  # access_token
+  access_token: Mapped[str] = mapped_column(nullable=True)
   created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), nullable=False)
 
   def __init__(self, username: str, password: str, created_at: Optional[datetime] = None):
