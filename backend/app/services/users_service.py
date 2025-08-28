@@ -20,4 +20,6 @@ class UserController:
 
     return success_response(user)
   
+
+  
 user_service = UserController()

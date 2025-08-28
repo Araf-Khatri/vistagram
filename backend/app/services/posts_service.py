@@ -8,7 +8,6 @@ from app.utils.response_mapper import success_response, error_response
 from app.utils.shareable_url import generate_shareable_url, decode_shareable_url
 
 class PostController:
-
   def get_posts(self):
     user_id = int(get_jwt_identity())
     expected_params = {

@@ -122,9 +122,9 @@ class AuthController:
       }, "Access token refreshed successfully", 200)
 
 
-
   def logout(self):
     pass
+
 
 
 auth_service = AuthController()
