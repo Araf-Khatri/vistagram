@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from .config import Config
 from .controllers.posts import posts_routes
 from .controllers.auth import auth_routes
-from .db import db
+from app.db import db
 
 app = Flask(__name__)
 
@@ -15,6 +15,8 @@ app.config.from_object(Config)
 # Base.metadata.create_all(engine)
 db.init_app(app)
 Migrate(app, db)
+with app.app_context():
+  db.create_all()
 
 # try to hide this
 app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY

@@ -1,17 +1,21 @@
-from sqlalchemy import Column, Integer, DateTime, String
+from typing import Optional
 from datetime import datetime, timezone
-from ...db import db
+from sqlalchemy.orm import Mapped, mapped_column
+from app.db import db
 
 class User(db.Model):
-  __tablename__  = "users"
-  
-  id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-  username = Column(String, unique=True, nullable=False)
-  password = Column(String, nullable=False)  
-  created_at = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
+  __tablename__ = "users"
 
-  
+  id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+  username: Mapped[str] = mapped_column(unique=True, nullable=False)
+  password: Mapped[str] = mapped_column(nullable=False)
+  # access_token
+  created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), nullable=False)
+
+  def __init__(self, username: str, password: str, created_at: Optional[datetime] = None):
+    self.username = username
+    self.password = password
+    self.created_at = created_at or datetime.now(timezone.utc)
+
   def to_dict(self):
     return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-  
-  

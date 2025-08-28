@@ -70,3 +70,5 @@ def user_info():
   }
 
   return success_response(user)
+
+# def logout

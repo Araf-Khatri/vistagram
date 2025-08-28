@@ -15,3 +15,8 @@ class Config:
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES_DAYS = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES_DAYS", 30))
+
+    REDIS_HOST = os.getenv("REDIS_HOST")
+    REDIS_PORT = os.getenv("REDIS_PORT")
+
+    URL_HASH_SECRET = os.getenv("URL_HASH_SECRET") or ""
