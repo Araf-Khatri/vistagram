@@ -27,10 +27,17 @@ def login(request_body):
   return auth_service.login(request_body=request_body)
 
 
-@blueprint.route("/refresh_token", methods=["GET"])
+@blueprint.route("/refresh_token", methods=["POST"])
 @auth_service.protect_request
 def refresh_token():
   return auth_service.refresh_token()
+
+
+@blueprint.route("/logout", methods=["POST"])
+@auth_service.protect_request
+def logout():
+  return auth_service.logout()
+
 
 
 @blueprint.route("/me", methods=["GET"])

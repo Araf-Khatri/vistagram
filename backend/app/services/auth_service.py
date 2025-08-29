@@ -110,14 +110,29 @@ class AuthService:
     session.commit()
 
     return success_response({
-        "id": user.id,
-        "username": user.username, 
         "access_token": new_access_token, 
       }, "Access token refreshed successfully", 200)
 
 
   def logout(self):
-    pass
+    user_id = get_jwt_identity()
+    auth_header = request.headers.get("Authorization", None)
+
+    if auth_header and auth_header.startswith("Bearer "):
+      access_token = auth_header.split(" ")[1] 
+    else:
+      return error_response("User not logged in", 401)
+    
+    try:
+      user = session.query(User).filter_by(id=user_id, access_token=access_token).one()
+      user.access_token = None
+      session.add(user)
+      session.commit()
+    except:
+      return error_response("User not found or Token revoked", 400)
+    
+    return success_response(None, "User logged out successfully")
+
 
 
 
