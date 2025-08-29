@@ -1,16 +1,15 @@
 import styled from "styled-components";
 
 export const FormContainer = styled.form`
-  max-width: 400px;
   margin: 2rem auto;
   background: #f9f9f9;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
   @media (max-width: 768px) {
-    max-width: 100%;
     padding: 1rem;
-    margin: 0;
+    margin: 2rem 0 auto;
   }
 `;
 

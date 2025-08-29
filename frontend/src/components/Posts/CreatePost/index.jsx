@@ -7,12 +7,18 @@ import {
   Input,
   Label,
 } from "@/common/styles";
+import { showErrorToast, showSuccessToast } from "@/common/toast";
 import uploadImage from "@/utils/uploadImage";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { createPost } from "../handlers";
+
+const CreatePostForm = styled(FormContainer)`
+  max-width: 500px;
+  margin: 3rem auto;
+`;
 
 const Flex = styled.div`
   display: flex;
@@ -54,17 +60,20 @@ const CreatePost = () => {
       setLoading(true);
       const caption = e.target.caption.value.replace(/ +/g, " ").trim();
       if (caption.length == 0) {
-        setShowErrorMessage("Caption is required");
-        setTimeout(() => setShowErrorMessage(null), 4000);
+        showErrorToast("Caption is required");
       }
       const imageUrl = await uploadImage(file);
       await createPost({
         image: imageUrl,
         caption: e.target.caption.value,
       });
+      showSuccessToast({ message: "Post published!" });
       navigate("/", { replace: true });
     } catch (err) {
-      setShowErrorMessage(err?.message || "Something went wrong");
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
       setTimeout(() => setShowErrorMessage(null), 4000);
     } finally {
       setLoading(false);
@@ -72,7 +81,7 @@ const CreatePost = () => {
   };
 
   return (
-    <FormContainer onSubmit={onSubmitHandler}>
+    <CreatePostForm onSubmit={onSubmitHandler}>
       <Title>Create Post</Title>
       {showErrorMessage && <ErrorMessage>{showErrorMessage}</ErrorMessage>}
       <FieldGroup>
@@ -108,7 +117,7 @@ const CreatePost = () => {
       <Button disabled={loading} type="submit">
         {loading ? "Uploading..." : "Create Post"}
       </Button>
-    </FormContainer>
+    </CreatePostForm>
   );
 };
 

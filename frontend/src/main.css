@@ -1,7 +1,24 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 html {
   font-family: sans-serif;
+}
+
+.Toastify__toast {
+  background-color: #29b8b8;
+  color: #252525;
+  font-size: 0.9rem;
+  padding: 1rem 1.75rem 1rem 1rem;
+  min-height: auto;
+}
+
+.success_toast {
+  background-color: #63ad38;
+}
+
+.error_toast {
+  background-color: #e63946;
 }

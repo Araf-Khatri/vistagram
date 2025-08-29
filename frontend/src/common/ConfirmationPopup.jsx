@@ -67,7 +67,7 @@ const PopupButton = styled(Button)`
   }
 
   &:disabled {
-    background: #999;
+    background: #999 !important;
     cursor: not-allowed;
   }
 `;

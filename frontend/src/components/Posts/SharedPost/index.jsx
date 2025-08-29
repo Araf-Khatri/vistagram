@@ -1,4 +1,3 @@
-import { ErrorMessage } from "@/common/styles";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Post from "../PostListing/Post";
@@ -41,7 +40,6 @@ export default function SharedPost() {
   const {
     posts,
     loading,
-    error,
     updateUsersPostLikes,
     postLikesLoading,
     postUrlCopiedToClipboard,
@@ -51,7 +49,6 @@ export default function SharedPost() {
   return (
     <PostsContainer>
       <Title>Shared Post</Title>
-      {error && <ErrorMessage>{error.message}</ErrorMessage>}
       <Stack>
         {loading ? (
           <Loading>Loading...</Loading>

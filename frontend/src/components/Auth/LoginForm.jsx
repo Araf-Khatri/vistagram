@@ -5,6 +5,7 @@ import {
   Input,
   Label,
 } from "@/common/styles";
+import { showErrorToast, showSuccessToast } from "@/common/toast";
 import UserContext from "@/context/userContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,9 +28,13 @@ export default function LoginForm() {
 
       const userDetails = await loginHandler(credentials);
       setUserDetails({ ...userDetails, userFound: true });
-      setTimeout(() => navigate("/", { replace: true }), 500);
+      showSuccessToast({ message: "You’re now logged in. Redirecting..." });
+      setTimeout(() => navigate("/", { replace: true }), 1000);
     } catch (err) {
-      console.error("Login failed:", err);
+      const errMessage = err?.response?.data?.message;
+      showErrorToast({
+        message: errMessage,
+      });
     } finally {
       setLoading(false);
     }

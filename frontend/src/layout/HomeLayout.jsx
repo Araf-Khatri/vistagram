@@ -1,4 +1,5 @@
 import ConfirmationPopup from "@/common/ConfirmationPopup";
+import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { logoutHandler } from "@/components/Auth/handlers";
 import UserContext from "@/context/userContext";
 import { useContext, useState } from "react";
@@ -105,7 +106,7 @@ const links = [
 export default function HomeLayout() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
   const [logoutConfirmationPopup, setLogoutConfirmationPopup] = useState({
     show: false,
     loading: false,
@@ -114,10 +115,17 @@ export default function HomeLayout() {
   const logoutUser = async () => {
     try {
       setLogoutConfirmationPopup((prev) => ({ ...prev, loading: true }));
+
       await logoutHandler();
-      setTimeout(() => navigate("/login", { replace: true }), 500);
+      showSuccessToast({ message: "You are now logged out." });
+      setTimeout(() => {
+        setUserDetails({ id: null, username: null, userFound: false });
+      }, 1000);
     } catch (err) {
-      // setErrorMessage("Unanble to logout user");
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
     } finally {
       setLogoutConfirmationPopup((prev) => ({ ...prev, loading: false }));
     }
@@ -127,8 +135,8 @@ export default function HomeLayout() {
     <AppContainer>
       <ConfirmationPopup
         isOpen={logoutConfirmationPopup.show}
-        title="Are you sure you want to log out?"
-        description="You will be signed out of your account and may need to log in again to continue."
+        title="Are you sure you want to logout?"
+        description="You will be signed out of your account and may need to login again to continue."
         confirmCtaText="Log out"
         onConfirm={logoutUser}
         loading={logoutConfirmationPopup.loading}

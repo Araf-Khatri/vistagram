@@ -19,7 +19,12 @@ const InnerStack = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 500px;
+  width: 100%;
   gap: 1rem;
+  @media (max-width: 768px) {
+    margin: 0 1rem;
+  }
 `;
 
 const Heading = styled.h1`
@@ -31,10 +36,6 @@ const Heading = styled.h1`
 
 const FormWrapper = styled.div`
   min-width: 100%;
-
-  @media (min-width: 768px) {
-    min-width: 700px;
-  }
 `;
 
 const TextBox = styled.div`

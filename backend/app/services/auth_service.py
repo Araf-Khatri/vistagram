@@ -73,7 +73,7 @@ class AuthService:
 
     user = session.query(User).filter_by(username=username).one_or_none()
     if not user or not check_password_hash(user.password, password):
-      return error_response("Invalid username or password", 401)
+      return error_response("Invalid username or password", 422)
 
     access_token = create_access_token(identity=str(user.id))
     user.access_token = access_token

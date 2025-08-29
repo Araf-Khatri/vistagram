@@ -1,3 +1,4 @@
+import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { fetchPosts, updatePostLike } from "../handlers";
@@ -10,7 +11,6 @@ const usePostList = () => {
   const [loading, setLoading] = useState(true);
   const [postLikesLoading, setPostLikesLoading] = useState(new Map());
   const [copiedPostUrlPostId, setCopiedPostUrlPostId] = useState(null);
-  const [error, setError] = useState(null);
   const [ref, setRef] = useState(null);
 
   useEffect(() => {
@@ -47,7 +47,10 @@ const usePostList = () => {
       setMetadata(metadata);
       setPosts((prevPosts) => [...prevPosts, ...(newPosts || [])]);
     } catch (err) {
-      setError(err);
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
     } finally {
       setLoading(false);
     }
@@ -70,7 +73,10 @@ const usePostList = () => {
         return mappedPosts;
       });
     } catch (err) {
-      setError("Unable to update likes");
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
     } finally {
       setPostLikesLoading((prev) => {
         const newMap = cloneDeep(prev);
@@ -85,10 +91,11 @@ const usePostList = () => {
     navigator.clipboard
       .writeText(sharableUrl)
       .then(() => {
-        console.log("Text copied to clipboard successfully!");
+        showSuccessToast({ message: "Text copied to clipboard successfully!" });
       })
-      .catch((err) => {
-        console.error("Failed to copy text: ", err);
+      .catch((_) => {
+        const errMessage = "Failed to copy url";
+        showErrorToast({ message: errMessage });
       });
 
     setCopiedPostUrlPostId(postId);
@@ -99,7 +106,6 @@ const usePostList = () => {
     setRef,
     posts,
     loading,
-    error,
     postLikesLoading,
     updateUsersPostLikes,
     postUrlCopiedToClipboard,

@@ -1,11 +1,11 @@
 import {
   Button,
-  ErrorMessage,
   FieldGroup,
   FormContainer,
   Input,
   Label,
 } from "@/common/styles";
+import { showErrorToast, showSuccessToast } from "@/common/toast";
 import UserContext from "@/context/userContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,6 @@ export default function SignupForm() {
   const navigate = useNavigate();
   const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleSubmit = async (event) => {
     try {
@@ -25,8 +24,7 @@ export default function SignupForm() {
       if (
         event.target.password.value !== event.target["confirm-password"].value
       ) {
-        setErrorMessage("Passwords do not match");
-        setTimeout(() => setErrorMessage(null), 5000);
+        showErrorToast({ message: "Passwords do not match" });
         setLoading(false);
         return;
       }
@@ -38,9 +36,13 @@ export default function SignupForm() {
 
       const userDetails = await signupHandler(credentials);
       setUserDetails({ ...userDetails, userFound: true });
-      setTimeout(() => navigate("/", { replace: true }), 500);
+      setTimeout(() => navigate("/", { replace: true }), 1000);
+      showSuccessToast({ message: "Welcome! You’ve successfully signed in." });
     } catch (err) {
-      console.error("Signup failed:", err);
+      const errMessage = err?.response?.data?.message;
+      showErrorToast({
+        message: errMessage,
+      });
     } finally {
       setLoading(false);
     }
@@ -72,8 +74,6 @@ export default function SignupForm() {
           required
         />
       </FieldGroup>
-
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
       <Button disabled={loading} type="submit">
         {loading ? "Signing up..." : "Signup"}

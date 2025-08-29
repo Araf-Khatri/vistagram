@@ -1,3 +1,4 @@
+import { showErrorToast } from "@/common/toast";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,7 +10,6 @@ const useSharedPost = () => {
   const [loading, setLoading] = useState(false);
   const [postLikesLoading, setPostLikesLoading] = useState(new Map());
   const [copiedPostUrlPostId, setCopiedPostUrlPostId] = useState(null);
-  const [error, setError] = useState(null);
 
   const loadPost = async () => {
     setLoading(true);
@@ -17,7 +17,10 @@ const useSharedPost = () => {
       const post = await getSharedPost(params.post_url);
       setPosts([post]);
     } catch (err) {
-      setError(err);
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
     } finally {
       setLoading(false);
     }
@@ -40,7 +43,10 @@ const useSharedPost = () => {
         return mappedPosts;
       });
     } catch (err) {
-      setError("Unable to update likes");
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
     } finally {
       setPostLikesLoading((prev) => {
         const newMap = cloneDeep(prev);
@@ -72,7 +78,6 @@ const useSharedPost = () => {
   return {
     posts,
     loading,
-    error,
     postLikesLoading,
     updateUsersPostLikes,
     copiedPostUrlPostId,
