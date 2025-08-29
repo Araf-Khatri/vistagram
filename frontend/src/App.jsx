@@ -15,9 +15,10 @@ function App() {
   const { userFound } = userDetails;
 
   useEffect(() => {
-    console.log(userDetails);
     if (localStorage.getItem(API_TOKEN_KEY)) {
       refreshUserToken().then(() => getUserDetails());
+    } else {
+      setLoading(false);
     }
   }, []);
 

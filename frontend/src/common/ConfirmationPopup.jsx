@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Button } from "./styles";
 
 const Overlay = styled.div`
   position: fixed;
@@ -14,40 +15,42 @@ const Overlay = styled.div`
 `;
 
 const Popup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   background: white;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-  width: 360px;
-  padding: 24px;
-  text-align: center;
+  max-width: 28.5rem;
+  padding: 1.5rem;
+  margin: 0 1rem;
 `;
 
 const Title = styled.h3`
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 8px;
 `;
 
 const Description = styled.p`
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: #555;
-  margin-bottom: 16px;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 1rem;
 `;
 
-const Button = styled.button`
-  flex: 1;
-  padding: 10px 0;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  cursor: pointer;
+const PopupButton = styled(Button)`
+  width: fit-content;
+  padding: 0.8rem 1rem;
+  font-size: 0.85rem;
   border: none;
+  border-radius: 0.25rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 
   &.cancel {
     background: #f2f2f2;
@@ -62,6 +65,11 @@ const Button = styled.button`
       background: #005d5dff;
     }
   }
+
+  &:disabled {
+    background: #999;
+    cursor: not-allowed;
+  }
 `;
 
 const ConfirmationPopup = ({
@@ -72,6 +80,7 @@ const ConfirmationPopup = ({
   cancelCtaText = "Cancel",
   onClose,
   onConfirm,
+  loading,
 }) => {
   if (!isOpen) return null;
 
@@ -81,12 +90,16 @@ const ConfirmationPopup = ({
         <Title>{title}</Title>
         <Description>{description}</Description>
         <ButtonGroup>
-          <Button className="cancel" onClick={onClose}>
+          <PopupButton disabled={loading} className="cancel" onClick={onClose}>
             {cancelCtaText}
-          </Button>
-          <Button className="confirm" onClick={onConfirm}>
+          </PopupButton>
+          <PopupButton
+            disabled={loading}
+            className="confirm"
+            onClick={onConfirm}
+          >
             {confirmCtaText}
-          </Button>
+          </PopupButton>
         </ButtonGroup>
       </Popup>
     </Overlay>

@@ -3,8 +3,9 @@ import { logoutHandler } from "@/components/Auth/handlers";
 import UserContext from "@/context/userContext";
 import { useContext, useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { MdOutlineLogout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const AppContainer = styled.div`
@@ -30,7 +31,7 @@ const Username = styled.div`
   font-weight: bold;
 `;
 
-const IconButton = styled.button`
+const MobileViewMenu = styled.button`
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -42,9 +43,23 @@ const IconButton = styled.button`
   }
 `;
 
+const IconButton = styled.button`
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
+const NavInteractions = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+`;
+
 const NavLinks = styled.div`
   display: flex;
   gap: 1rem;
+  align-items: center;
 
   @media (max-width: 768px) {
     display: none;
@@ -88,6 +103,7 @@ const links = [
 ];
 
 export default function HomeLayout() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { userDetails } = useContext(UserContext);
   const [logoutConfirmationPopup, setLogoutConfirmationPopup] = useState({
@@ -99,7 +115,7 @@ export default function HomeLayout() {
     try {
       setLogoutConfirmationPopup((prev) => ({ ...prev, loading: true }));
       await logoutHandler();
-      setTimeout();
+      setTimeout(() => navigate("/login", { replace: true }), 500);
     } catch (err) {
       // setErrorMessage("Unanble to logout user");
     } finally {
@@ -113,12 +129,13 @@ export default function HomeLayout() {
         isOpen={logoutConfirmationPopup.show}
         title="Are you sure you want to log out?"
         description="You will be signed out of your account and may need to log in again to continue."
-        confirmCtaText="Log Out"
+        confirmCtaText="Log out"
+        onConfirm={logoutUser}
+        loading={logoutConfirmationPopup.loading}
         cancelCtaText="Cancel"
         onClose={() =>
           setLogoutConfirmationPopup((prev) => ({ ...prev, show: false }))
         }
-        onConfirm={logoutUser}
       />
       <Navbar>
         <NavContainer>
@@ -127,16 +144,25 @@ export default function HomeLayout() {
           ) : (
             <Username>{userDetails.username}</Username>
           )}
-          <NavLinks>
-            {links.map(({ label, path }) => (
-              <Link to={path} key={path}>
-                {label}
-              </Link>
-            ))}
-          </NavLinks>
-          <IconButton onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <IoClose /> : <RxHamburgerMenu />}
-          </IconButton>
+          <NavInteractions>
+            <NavLinks>
+              {links.map(({ label, path }) => (
+                <Link to={path} key={path}>
+                  {label}
+                </Link>
+              ))}
+            </NavLinks>
+            <MobileViewMenu onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <IoClose /> : <RxHamburgerMenu />}
+            </MobileViewMenu>
+            <IconButton
+              onClick={() =>
+                setLogoutConfirmationPopup((prev) => ({ ...prev, show: true }))
+              }
+            >
+              <MdOutlineLogout />
+            </IconButton>
+          </NavInteractions>
         </NavContainer>
 
         {isOpen && (
