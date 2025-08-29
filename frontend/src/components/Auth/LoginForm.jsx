@@ -5,12 +5,12 @@ import {
   Input,
   Label,
 } from "@/common/styles";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import UserContext from "@/context/userContext";
+import { useContext, useState } from "react";
 import { loginHandler } from "./handlers";
 
 export default function LoginForm() {
-  const navigate = useNavigate();
+  const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -23,8 +23,8 @@ export default function LoginForm() {
         password: event.target.password.value,
       };
 
-      await loginHandler(credentials);
-      setTimeout(() => navigate("/", { replace: true }), 500);
+      const userDetails = await loginHandler(credentials);
+      setUserDetails((prev) => ({ ...prev, ...userDetails }));
     } catch (err) {
       console.error("Login failed:", err);
     } finally {

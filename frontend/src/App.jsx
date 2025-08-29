@@ -1,23 +1,41 @@
-import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Authentication from "./components/Auth";
+import { getLoggedInUser, refreshUserToken } from "./components/Auth/handlers";
 import CreatePost from "./components/Posts/CreatePost";
 import PostListing from "./components/Posts/PostListing";
 import SharedPost from "./components/Posts/SharedPost";
+import UserContext from "./context/userContext";
 import HomeLayout from "./layout/HomeLayout";
 import { API_TOKEN_KEY } from "./utils/axiosInstance";
 
 function App() {
-  const navigate = useNavigate();
-  const [token, setToken] = useState(localStorage.getItem(API_TOKEN_KEY));
+  const { userDetails, setUserDetails } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
+  const { userFound } = userDetails;
 
   useEffect(() => {
-    setToken(localStorage.getItem(API_TOKEN_KEY));
-  }, [navigate]);
+    console.log(userDetails);
+    if (localStorage.getItem(API_TOKEN_KEY)) {
+      refreshUserToken().then(() => getUserDetails());
+    }
+  }, []);
 
+  const getUserDetails = async () => {
+    try {
+      const userDetails = await getLoggedInUser();
+      setUserDetails({ ...userDetails, userFound: true });
+    } catch (_) {
+      setUserDetails((prev) => ({ ...prev, userFound: false }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <>Loading...</>;
   return (
     <Routes>
-      {!token && (
+      {!userFound && (
         <>
           <Route path="/login" element={<Authentication type="login" />} />
           <Route path="/signup" element={<Authentication type="signup" />} />
@@ -25,7 +43,7 @@ function App() {
       )}
 
       <Route
-        element={token ? <HomeLayout /> : <Navigate to="/login" replace />}
+        element={userFound ? <HomeLayout /> : <Navigate to="/login" replace />}
       >
         <Route path="/create" element={<CreatePost />} />
         <Route path="/shared/:post_url" element={<SharedPost />} />
@@ -34,7 +52,7 @@ function App() {
 
       <Route
         path="/*"
-        element={<Navigate to={token ? "/" : "/login"} replace />}
+        element={<Navigate to={userFound ? "/" : "/login"} replace />}
       />
     </Routes>
   );

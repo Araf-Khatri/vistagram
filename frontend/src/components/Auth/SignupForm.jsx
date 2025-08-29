@@ -6,12 +6,12 @@ import {
   Input,
   Label,
 } from "@/common/styles";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import UserContext from "@/context/userContext";
+import { useContext, useState } from "react";
 import { signupHandler } from "./handlers";
 
 export default function SignupForm() {
-  const navigate = useNavigate();
+  const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -34,8 +34,8 @@ export default function SignupForm() {
         password: event.target.password.value,
       };
 
-      await signupHandler(credentials);
-      setTimeout(() => navigate("/", { replace: true }), 500);
+      const userDetails = await signupHandler(credentials);
+      setUserDetails((prev) => ({ ...prev, ...userDetails }));
     } catch (err) {
       console.error("Signup failed:", err);
     } finally {

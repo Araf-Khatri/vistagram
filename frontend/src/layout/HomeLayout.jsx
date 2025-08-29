@@ -1,6 +1,7 @@
-import { ErrorMessage } from "@/common/styles";
-import { getLoggedInUser } from "@/components/Auth/handlers";
-import { useEffect, useState } from "react";
+import ConfirmationPopup from "@/common/ConfirmationPopup";
+import { logoutHandler } from "@/components/Auth/handlers";
+import UserContext from "@/context/userContext";
+import { useContext, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { Link, Outlet } from "react-router-dom";
@@ -88,35 +89,40 @@ const links = [
 
 export default function HomeLayout() {
   const [isOpen, setIsOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState({
-    username: null,
-    id: null,
+  const { userDetails } = useContext(UserContext);
+  const [logoutConfirmationPopup, setLogoutConfirmationPopup] = useState({
+    show: false,
+    loading: false,
   });
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
 
-  useEffect(() => {
-    getUserDetail();
-  }, []);
-
-  const getUserDetail = async () => {
+  const logoutUser = async () => {
     try {
-      setLoading(true);
-      const userDetails = await getLoggedInUser();
-      setUserDetails(userDetails);
+      setLogoutConfirmationPopup((prev) => ({ ...prev, loading: true }));
+      await logoutHandler();
+      setTimeout();
     } catch (err) {
-      setErrorMessage("Unable to find username");
+      // setErrorMessage("Unanble to logout user");
     } finally {
-      setLoading(false);
+      setLogoutConfirmationPopup((prev) => ({ ...prev, loading: false }));
     }
   };
 
   return (
     <AppContainer>
+      <ConfirmationPopup
+        isOpen={logoutConfirmationPopup.show}
+        title="Are you sure you want to log out?"
+        description="You will be signed out of your account and may need to log in again to continue."
+        confirmCtaText="Log Out"
+        cancelCtaText="Cancel"
+        onClose={() =>
+          setLogoutConfirmationPopup((prev) => ({ ...prev, show: false }))
+        }
+        onConfirm={logoutUser}
+      />
       <Navbar>
         <NavContainer>
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          {loading ? (
+          {!userDetails.userFound ? (
             <span>fetching username...</span>
           ) : (
             <Username>{userDetails.username}</Username>

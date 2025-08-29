@@ -7,7 +7,7 @@ const usePostList = () => {
   const [posts, setPosts] = useState([]);
   const [metadata, setMetadata] = useState(null);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [postLikesLoading, setPostLikesLoading] = useState(new Map());
   const [copiedPostUrlPostId, setCopiedPostUrlPostId] = useState(null);
   const [error, setError] = useState(null);
