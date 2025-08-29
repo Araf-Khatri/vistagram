@@ -34,6 +34,13 @@ export const updatePostLike = catchAsync(async (postId) => {
   };
 });
 
+export const generatePostLink = catchAsync(async (postId) => {
+  const url = urls.createPostShareableLink.replace("<POST_ID>", postId);
+
+  const response = await axiosInstance.get(url);
+  return response.data.data;
+});
+
 export const getSharedPost = catchAsync(async (postUrl) => {
   const url = urls.sharedPost.replace("<POST_URL>", postUrl);
 

@@ -41,8 +41,9 @@ export default function Posts() {
     loading,
     error,
     updateUsersPostLikes,
+    disablePostsShareIcon,
     postLikesLoading,
-    postUrlCopiedToClipboard,
+    copyPostShareableLink,
     copiedPostUrlPostId,
   } = usePostList();
 
@@ -59,8 +60,9 @@ export default function Posts() {
             post={post}
             updateUsersPostLikes={updateUsersPostLikes}
             likeLoading={postLikesLoading.get(post.id) || false}
-            sharePost={() => postUrlCopiedToClipboard(post.id, post.post_url)}
+            sharePost={() => copyPostShareableLink(post.id)}
             urlCopied={copiedPostUrlPostId === post.id}
+            shareIconDisabled={disablePostsShareIcon.get(post.id) || false}
           />
         ))}
       </Stack>

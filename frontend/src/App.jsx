@@ -53,7 +53,7 @@ function App() {
 
       <Route
         path="/*"
-        element={<Navigate to={userFound ? "/" : "/login"} replace />}
+        element={<Navigate to={userFound ? "/" : `/login`} replace />}
       />
     </Routes>
   );

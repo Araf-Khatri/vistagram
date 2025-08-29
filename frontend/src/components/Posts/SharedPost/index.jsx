@@ -42,7 +42,8 @@ export default function SharedPost() {
     loading,
     updateUsersPostLikes,
     postLikesLoading,
-    postUrlCopiedToClipboard,
+    disablePostsShareIcon,
+    copyPostShareableLink,
     copiedPostUrlPostId,
   } = useSharedPost();
 
@@ -59,8 +60,9 @@ export default function SharedPost() {
               post={post}
               updateUsersPostLikes={updateUsersPostLikes}
               likeLoading={postLikesLoading.get(post.id) || false}
-              sharePost={() => postUrlCopiedToClipboard(post.id, post.post_url)}
+              sharePost={() => copyPostShareableLink(post.id)}
               urlCopied={copiedPostUrlPostId === post.id}
+              shareIconDisabled={disablePostsShareIcon.get(post.id) || false}
             />
           ))
         )}

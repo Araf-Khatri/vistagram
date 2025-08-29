@@ -80,6 +80,7 @@ export default function Post({
   updateUsersPostLikes,
   likeLoading = true,
   sharePost,
+  shareIconDisabled,
   urlCopied,
 }) {
   const {
@@ -121,7 +122,11 @@ export default function Post({
           <Likes>{likes_count}</Likes>
         </LeftGroup>
         <RightGroup onClick={sharePost}>
-          <IconButton color="dodgerblue" aria-label="Share">
+          <IconButton
+            disabled={shareIconDisabled}
+            color={shareIconDisabled ? "#757575" : "dodgerblue"}
+            aria-label="Share"
+          >
             <FaShare />
           </IconButton>
           {urlCopied ? <span>copied</span> : <Shares>{share_count}</Shares>}

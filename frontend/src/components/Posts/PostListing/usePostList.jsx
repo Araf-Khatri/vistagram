@@ -1,7 +1,7 @@
 import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
-import { fetchPosts, updatePostLike } from "../handlers";
+import { fetchPosts, generatePostLink, updatePostLike } from "../handlers";
 
 const LIMIT = 5;
 const usePostList = () => {
@@ -10,6 +10,7 @@ const usePostList = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [postLikesLoading, setPostLikesLoading] = useState(new Map());
+  const [disablePostsShareIcon, setDisablePostsShareIcon] = useState(new Map());
   const [copiedPostUrlPostId, setCopiedPostUrlPostId] = useState(null);
   const [ref, setRef] = useState(null);
 
@@ -86,20 +87,41 @@ const usePostList = () => {
     }
   };
 
-  const postUrlCopiedToClipboard = (postId, postUrl) => {
-    const sharableUrl = `${window.location.origin}/shared/${postUrl}`;
-    navigator.clipboard
-      .writeText(sharableUrl)
-      .then(() => {
-        showSuccessToast({ message: "Text copied to clipboard successfully!" });
-      })
-      .catch((_) => {
-        const errMessage = "Failed to copy url";
-        showErrorToast({ message: errMessage });
+  const copyPostShareableLink = async (postId) => {
+    try {
+      setDisablePostsShareIcon((prev) => {
+        const newMap = cloneDeep(prev);
+        newMap.set(postId, true);
+        return newMap;
       });
+      const { link: postUrl } = await generatePostLink(postId);
+      const sharableUrl = `${window.location.origin}/shared/${postUrl}`;
+      navigator.clipboard
+        .writeText(sharableUrl)
+        .then(() => {
+          showSuccessToast({
+            message: "Text copied to clipboard successfully!",
+          });
+        })
+        .catch((_) => {
+          const errMessage = "Failed to copy url";
+          showErrorToast({ message: errMessage });
+        });
 
-    setCopiedPostUrlPostId(postId);
-    setTimeout(() => setCopiedPostUrlPostId(null), 3000);
+      setCopiedPostUrlPostId(postId);
+      setTimeout(() => setCopiedPostUrlPostId(null), 3000);
+    } catch (err) {
+      const errMessage =
+        err?.response?.data?.message ||
+        `Error status code: ${err?.response?.status}`;
+      showErrorToast(errMessage);
+    } finally {
+      setDisablePostsShareIcon((prev) => {
+        const newMap = cloneDeep(prev);
+        newMap.delete(postId);
+        return newMap;
+      });
+    }
   };
 
   return {
@@ -108,7 +130,8 @@ const usePostList = () => {
     loading,
     postLikesLoading,
     updateUsersPostLikes,
-    postUrlCopiedToClipboard,
+    disablePostsShareIcon,
+    copyPostShareableLink,
     copiedPostUrlPostId,
   };
 };

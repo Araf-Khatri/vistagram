@@ -9,5 +9,6 @@ export const urls = {
   getPosts: `${apiUrl}/posts`,
   createPost: `${apiUrl}/posts/create`,
   updatePostLike: `${apiUrl}/posts/<POST_ID>/update_like`,
+  createPostShareableLink: `${apiUrl}/posts/<POST_ID>/create_link`,
   sharedPost: `/posts/shared/<POST_URL>`,
 };
