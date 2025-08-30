@@ -124,7 +124,7 @@ export default function HomeLayout() {
 
   useEffect(() => {
     setActiveLink(location.pathname);
-  }, []);
+  }, [location]);
 
   const logoutUser = async () => {
     try {

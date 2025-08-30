@@ -1,7 +1,6 @@
 "use client";
 import {
   Button,
-  ErrorMessage,
   FieldGroup,
   FormContainer,
   Input,
@@ -52,16 +51,23 @@ const CreatePost = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
-  const [showErrorMessage, setShowErrorMessage] = useState(null);
 
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
       const caption = e.target.caption.value.replace(/ +/g, " ").trim();
+      const allowedFileSize = 1024 * 1024 * 3; // 1mb in bytes; 1024 bytes(1KB) * 1024 KB(1MB) * 3 = 3MB
+      console.log(file.size, allowedFileSize);
       if (caption.length == 0) {
         showErrorToast("Caption is required");
+        return;
       }
+      if (file.size > allowedFileSize) {
+        showErrorToast({ message: "File size should not exceed 3MB!" });
+        return;
+      }
+
       const imageUrl = await uploadImage(file);
       await createPost({
         image: imageUrl,
@@ -74,7 +80,6 @@ const CreatePost = () => {
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
       showErrorToast(errMessage);
-      setTimeout(() => setShowErrorMessage(null), 4000);
     } finally {
       setLoading(false);
     }
@@ -83,7 +88,6 @@ const CreatePost = () => {
   return (
     <CreatePostForm onSubmit={onSubmitHandler}>
       <Title>Create Post</Title>
-      {showErrorMessage && <ErrorMessage>{showErrorMessage}</ErrorMessage>}
       <FieldGroup>
         <Label htmlFor="file">Upload File:*</Label>
         <Flex>
