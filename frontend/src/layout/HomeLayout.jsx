@@ -2,11 +2,11 @@ import ConfirmationPopup from "@/common/ConfirmationPopup";
 import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { logoutHandler } from "@/components/Auth/handlers";
 import UserContext from "@/context/userContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const AppContainer = styled.div`
@@ -25,7 +25,9 @@ const NavContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  max-width: 55rem;
+  margin: 0 auto;
+  padding: 0.5rem 0;
 `;
 
 const Username = styled.div`
@@ -67,16 +69,23 @@ const NavLinks = styled.div`
   }
 `;
 
-const NavLink = styled.a`
-  padding: 0.5rem 0.75rem;
+const NavLink = styled(Link)`
   border-radius: 4px;
   text-decoration: none;
   color: ${({ theme }) => theme.text || "#000"};
   transition: background 0.2s ease;
+  font-weight: 600;
 
-  &:hover {
-    background: ${({ theme }) => theme.hover || "#ddd"};
-  }
+  ${({ active }) =>
+    active
+      ? `
+      color: #008080;
+    `
+      : `
+    &:hover {
+      background: ${({ theme }) => theme.hover || "#ddd"};
+    }
+    `}
 `;
 
 const MobileMenu = styled.div`
@@ -104,13 +113,18 @@ const links = [
 ];
 
 export default function HomeLayout() {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { userDetails, setUserDetails } = useContext(UserContext);
   const [logoutConfirmationPopup, setLogoutConfirmationPopup] = useState({
     show: false,
     loading: false,
   });
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, []);
 
   const logoutUser = async () => {
     try {
@@ -120,7 +134,7 @@ export default function HomeLayout() {
       showSuccessToast({ message: "You are now logged out." });
       setTimeout(() => {
         setUserDetails({ id: null, username: null, userFound: false });
-      }, 1000);
+      }, 500);
     } catch (err) {
       const errMessage =
         err?.response?.data?.message ||
@@ -155,9 +169,14 @@ export default function HomeLayout() {
           <NavInteractions>
             <NavLinks>
               {links.map(({ label, path }) => (
-                <Link to={path} key={path}>
+                <NavLink
+                  onClick={() => setActiveLink(path)}
+                  key={path}
+                  active={activeLink === path}
+                  to={path}
+                >
                   {label}
-                </Link>
+                </NavLink>
               ))}
             </NavLinks>
             <MobileViewMenu onClick={() => setIsOpen(!isOpen)}>
@@ -177,9 +196,14 @@ export default function HomeLayout() {
           <MobileMenu>
             <MobileLinks>
               {links.map(({ label, path }) => (
-                <Link to={path} key={path}>
+                <NavLink
+                  onClick={() => setActiveLink(path)}
+                  key={path}
+                  active={activeLink === path}
+                  to={path}
+                >
                   {label}
-                </Link>
+                </NavLink>
               ))}
             </MobileLinks>
           </MobileMenu>

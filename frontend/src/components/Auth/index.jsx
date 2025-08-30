@@ -28,7 +28,7 @@ const InnerStack = styled.div`
 `;
 
 const Heading = styled.h1`
-  color: teal;
+  color: #008080;
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
@@ -43,7 +43,7 @@ const TextBox = styled.div`
   font-size: 0.95rem;
 
   a {
-    color: teal;
+    color: #008080;
     text-decoration: none;
     font-weight: 500;
 

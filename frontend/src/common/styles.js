@@ -35,7 +35,7 @@ export const Input = styled.input`
   width: -webkit-fill-available;
 
   &:focus {
-    border-color: teal;
+    border-color: #008080;
     box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.2);
   }
 
@@ -45,7 +45,7 @@ export const Input = styled.input`
 
 export const Button = styled.button`
   padding: 0.75rem;
-  background: teal;
+  background: #008080;
   color: white;
   border: none;
   border-radius: 6px;

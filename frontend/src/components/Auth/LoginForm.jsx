@@ -28,7 +28,7 @@ export default function LoginForm() {
 
       const userDetails = await loginHandler(credentials);
       setUserDetails({ ...userDetails, userFound: true });
-      showSuccessToast({ message: "You’re now logged in. Redirecting..." });
+      showSuccessToast({ message: "You’re now logged in." });
       setTimeout(() => navigate("/", { replace: true }), 1000);
     } catch (err) {
       const errMessage = err?.response?.data?.message;
