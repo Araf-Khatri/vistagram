@@ -16,7 +16,12 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem(API_TOKEN_KEY)) {
-      refreshUserToken().then(() => getUserDetails());
+      refreshUserToken()
+        .then(() => getUserDetails())
+        .catch(() => {
+          localStorage.removeItem(API_TOKEN_KEY);
+          setLoading(false);
+        });
     } else {
       setLoading(false);
     }
