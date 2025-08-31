@@ -8,11 +8,12 @@ import {
 import { showErrorToast, showSuccessToast } from "@/common/toast";
 import UserContext from "@/context/userContext";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { loginHandler } from "./handlers";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
@@ -27,9 +28,11 @@ export default function LoginForm() {
       };
 
       const userDetails = await loginHandler(credentials);
+      const redirectUrl = searchParams.get("redirect") || "/";
+
       setUserDetails({ ...userDetails, userFound: true });
       showSuccessToast({ message: "You’re now logged in." });
-      setTimeout(() => navigate("/", { replace: true }), 1000);
+      setTimeout(() => navigate(redirectUrl, { replace: true }), 1000);
     } catch (err) {
       const errMessage = err?.response?.data?.message;
       showErrorToast({

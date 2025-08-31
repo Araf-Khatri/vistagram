@@ -28,8 +28,8 @@ export const loginHandler = catchAsync(async (loginCredentials) => {
 
 export const refreshUserToken = catchAsync(async () => {
   const response = await axiosInstance.post(urls.refreshToken);
-  const userDetails = response.data.data;
-  const token = userDetails.access_token;
+  const userDetails = response?.data?.data;
+  const token = userDetails?.access_token;
   localStorage.setItem(API_TOKEN_KEY, token);
 
   return true;

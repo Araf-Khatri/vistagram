@@ -21,7 +21,7 @@ const useSharedPost = () => {
       const errMessage =
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
-      showErrorToast(errMessage);
+      showErrorToast({ message: errMessage });
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ const useSharedPost = () => {
       const errMessage =
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
-      showErrorToast(errMessage);
+      showErrorToast({ message: errMessage });
     } finally {
       setPostLikesLoading((prev) => {
         const newMap = cloneDeep(prev);
@@ -88,7 +88,7 @@ const useSharedPost = () => {
       const errMessage =
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
-      showErrorToast(errMessage);
+      showErrorToast({ message: errMessage });
     } finally {
       setDisablePostsShareIcon((prev) => {
         const newMap = cloneDeep(prev);

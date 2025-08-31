@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const AppContainer = styled.div`
@@ -114,6 +114,7 @@ const links = [
 
 export default function HomeLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -134,12 +135,13 @@ export default function HomeLayout() {
       showSuccessToast({ message: "You are now logged out." });
       setTimeout(() => {
         setUserDetails({ id: null, username: null, userFound: false });
+        navigate("/login");
       }, 500);
     } catch (err) {
       const errMessage =
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
-      showErrorToast(errMessage);
+      showErrorToast({ message: errMessage });
     } finally {
       setLogoutConfirmationPopup((prev) => ({ ...prev, loading: false }));
     }

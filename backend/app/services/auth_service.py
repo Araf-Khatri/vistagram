@@ -16,8 +16,8 @@ class AuthService:
     def wrapper(*args, **kwargs):
       try:
         user_id = get_jwt_identity()
-        auth_header = request.headers.get("Authorization", None)
 
+        auth_header = request.headers.get("Authorization", None)
         if auth_header and auth_header.startswith("Bearer "):
           access_token = auth_header.split(" ")[1] 
         else:

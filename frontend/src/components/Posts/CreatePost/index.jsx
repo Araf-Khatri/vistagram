@@ -58,9 +58,9 @@ const CreatePost = () => {
       setLoading(true);
       const caption = e.target.caption.value.replace(/ +/g, " ").trim();
       const allowedFileSize = 1024 * 1024 * 3; // 1mb in bytes; 1024 bytes(1KB) * 1024 KB(1MB) * 3 = 3MB
-      console.log(file.size, allowedFileSize);
+
       if (caption.length == 0) {
-        showErrorToast("Caption is required");
+        showErrorToast({ message: "Caption is required" });
         return;
       }
       if (file.size > allowedFileSize) {
@@ -79,7 +79,7 @@ const CreatePost = () => {
       const errMessage =
         err?.response?.data?.message ||
         `Error status code: ${err?.response?.status}`;
-      showErrorToast(errMessage);
+      showErrorToast({ message: errMessage });
     } finally {
       setLoading(false);
     }

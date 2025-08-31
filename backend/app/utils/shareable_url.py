@@ -9,7 +9,6 @@ def generate_shareable_url(url_dict):
   post_id = int(url_dict["post_id"])
 
   sharable_url = hashids.encode(user_id, post_id)
-  print(sharable_url, hashids.decode(sharable_url))
   return sharable_url
 
 def decode_shareable_url(url):

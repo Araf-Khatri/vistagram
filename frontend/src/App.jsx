@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Authentication from "./components/Auth";
 import { getLoggedInUser, refreshUserToken } from "./components/Auth/handlers";
 import CreatePost from "./components/Posts/CreatePost";
@@ -10,20 +10,18 @@ import HomeLayout from "./layout/HomeLayout";
 import { API_TOKEN_KEY } from "./utils/axiosInstance";
 
 function App() {
+  const location = useLocation();
   const { userDetails, setUserDetails } = useContext(UserContext);
-  const [loading, setLoading] = useState(true);
   const { userFound } = userDetails;
 
   useEffect(() => {
-    if (localStorage.getItem(API_TOKEN_KEY)) {
+    if (!["/login", "/signup"].includes(location.pathname)) {
       refreshUserToken()
         .then(() => getUserDetails())
         .catch(() => {
+          setUserDetails((prev) => ({ ...prev, userFound: false }));
           localStorage.removeItem(API_TOKEN_KEY);
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
   }, []);
 
@@ -33,12 +31,9 @@ function App() {
       setUserDetails({ ...userDetails, userFound: true });
     } catch (_) {
       setUserDetails((prev) => ({ ...prev, userFound: false }));
-    } finally {
-      setLoading(false);
     }
   };
 
-  if (loading) return <>Loading...</>;
   return (
     <Routes>
       {!userFound && (
@@ -48,18 +43,13 @@ function App() {
         </>
       )}
 
-      <Route
-        element={userFound ? <HomeLayout /> : <Navigate to="/login" replace />}
-      >
-        <Route path="/create" element={<CreatePost />} />
-        <Route path="/shared/:post_url" element={<SharedPost />} />
-        <Route path="/" element={<PostListing />} />
-      </Route>
-
-      <Route
-        path="/*"
-        element={<Navigate to={userFound ? "/" : `/login`} replace />}
-      />
+      {userFound && (
+        <Route element={<HomeLayout />}>
+          <Route path="/create" element={<CreatePost />} />
+          <Route path="/shared/:post_url" element={<SharedPost />} />
+          <Route path="/" element={<PostListing />} />
+        </Route>
+      )}
     </Routes>
   );
 }
