@@ -29,7 +29,7 @@ function App() {
           localStorage.removeItem(API_TOKEN_KEY);
         });
     } else if (isAuthPage && localStorage.getItem(API_TOKEN_KEY)) {
-      navigate("/", { replace: true, state: { refresh: true } });
+      navigate("/", { replace: true });
     }
   }, [tokenRefreshed, navigate]);
 
@@ -41,8 +41,6 @@ function App() {
       setUserDetails((prev) => ({ ...prev, userFound: false }));
     }
   };
-
-  console.log(userDetails);
 
   return (
     <Routes>

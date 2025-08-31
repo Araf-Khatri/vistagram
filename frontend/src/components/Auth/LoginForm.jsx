@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Button,
@@ -8,13 +8,11 @@ import {
   Label,
 } from "../../common/styles";
 import { showErrorToast, showSuccessToast } from "../../common/toast";
-import UserContext from "../../context/UserContext";
 import { loginHandler } from "./handlers";
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -27,10 +25,9 @@ export default function LoginForm() {
         password: event.target.password.value,
       };
 
-      const userDetails = await loginHandler(credentials);
+      await loginHandler(credentials);
       const redirectUrl = searchParams.get("redirect") || "/";
 
-      setUserDetails({ ...userDetails, userFound: true });
       showSuccessToast({ message: "You’re now logged in." });
       setTimeout(() => navigate(redirectUrl, { replace: true }), 1000);
     } catch (err) {

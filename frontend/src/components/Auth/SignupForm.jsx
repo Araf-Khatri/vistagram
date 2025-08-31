@@ -1,7 +1,6 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../common/toast";
-import UserContext from "../../context/UserContext";
 import {
   Button,
   FieldGroup,
@@ -14,7 +13,6 @@ import { signupHandler } from "./handlers";
 export default function SignupForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -35,10 +33,9 @@ export default function SignupForm() {
         password: event.target.password.value,
       };
 
-      const userDetails = await signupHandler(credentials);
+      await signupHandler(credentials);
       const redirectUrl = searchParams.get("redirect") || "/";
 
-      setUserDetails({ ...userDetails, userFound: true });
       setTimeout(() => navigate(redirectUrl, { replace: true }), 1000);
       showSuccessToast({ message: "Welcome! You’ve successfully signed in." });
     } catch (err) {
