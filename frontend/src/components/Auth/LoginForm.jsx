@@ -1,14 +1,14 @@
+import { useContext, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Button,
   FieldGroup,
   FormContainer,
   Input,
   Label,
-} from "@/common/styles";
-import { showErrorToast, showSuccessToast } from "@/common/toast";
-import UserContext from "@/context/userContext";
-import { useContext, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+} from "../../common/styles";
+import { showErrorToast, showSuccessToast } from "../../common/toast";
+import UserContext from "../../context/userContext";
 import { loginHandler } from "./handlers";
 
 export default function LoginForm() {

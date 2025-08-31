@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
@@ -54,6 +55,17 @@ const TextBox = styled.div`
 `;
 
 export default function Authentication({ type }) {
+  const navigate = useNavigate();
+  const [searchedParams] = useSearchParams();
+  const queryParams = useMemo(() => {
+    let qParams = "";
+    const redirectParam = searchedParams.get("redirect");
+    if (redirectParam) qParams += `redirect=${redirectParam}`;
+
+    if (qParams.length > 0) qParams = "?" + qParams;
+    return qParams;
+  }, [navigate]);
+
   return (
     <Container>
       <InnerStack>
@@ -67,7 +79,7 @@ export default function Authentication({ type }) {
       {type === "login" && (
         <TextBox>
           New to us?{" "}
-          <Link to="/signup" replace>
+          <Link to={`/signup${queryParams}`} replace>
             Sign Up
           </Link>
         </TextBox>
@@ -76,7 +88,7 @@ export default function Authentication({ type }) {
       {type === "signup" && (
         <TextBox>
           Already have an account?{" "}
-          <Link to="/login" replace>
+          <Link to={`/login${queryParams}`} replace>
             Login
           </Link>
         </TextBox>

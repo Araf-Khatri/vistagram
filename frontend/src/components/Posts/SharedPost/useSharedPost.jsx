@@ -1,7 +1,7 @@
-import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from "../../../common/toast";
 import { generatePostLink, getSharedPost, updatePostLike } from "../handlers";
 
 const useSharedPost = () => {

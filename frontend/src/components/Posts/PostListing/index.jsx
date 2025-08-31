@@ -1,5 +1,5 @@
-import { ErrorMessage } from "@/common/styles";
 import styled from "styled-components";
+import { ErrorMessage } from "../../../common/styles";
 import Post from "./Post";
 import usePostList from "./usePostList";
 
@@ -34,7 +34,7 @@ const Observer = styled.div`
   width: 100%;
 `;
 
-export default function Posts() {
+export default function PostListing() {
   const {
     setRef,
     posts,

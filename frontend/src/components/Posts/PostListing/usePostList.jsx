@@ -1,6 +1,6 @@
-import { showErrorToast, showSuccessToast } from "@/common/toast";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
+import { showErrorToast, showSuccessToast } from "../../../common/toast";
 import { fetchPosts, generatePostLink, updatePostLike } from "../handlers";
 
 const LIMIT = 5;

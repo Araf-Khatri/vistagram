@@ -1,6 +1,6 @@
-import axiosInstance, { API_TOKEN_KEY } from "@/utils/axiosInstance";
-import catchAsync from "@/utils/catchAsync";
-import { urls } from "@/utils/urls";
+import axiosInstance, { API_TOKEN_KEY } from "../../utils/axiosInstance";
+import catchAsync from "../../utils/catchAsync";
+import { urls } from "../../utils/urls";
 
 export const signupHandler = catchAsync(async (signupCredentials) => {
   const response = await axiosInstance.post(urls.signup, signupCredentials);

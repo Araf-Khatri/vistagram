@@ -1,17 +1,17 @@
 "use client";
+import { useState } from "react";
+import { RxCross2 } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import {
   Button,
   FieldGroup,
   FormContainer,
   Input,
   Label,
-} from "@/common/styles";
-import { showErrorToast, showSuccessToast } from "@/common/toast";
-import uploadImage from "@/utils/uploadImage";
-import { useState } from "react";
-import { RxCross2 } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+} from "../../../common/styles";
+import { showErrorToast, showSuccessToast } from "../../../common/toast";
+import uploadImage from "../../../utils/uploadImage";
 import { createPost } from "../handlers";
 
 const CreatePostForm = styled(FormContainer)`

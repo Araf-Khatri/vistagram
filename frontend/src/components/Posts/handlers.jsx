@@ -1,6 +1,6 @@
-import axiosInstance from "@/utils/axiosInstance";
-import catchAsync from "@/utils/catchAsync";
-import { urls } from "@/utils/urls";
+import axiosInstance from "../../utils/axiosInstance";
+import catchAsync from "../../utils/catchAsync";
+import { urls } from "../../utils/urls";
 
 export const fetchPosts = catchAsync(async (page = 1, limit = 5) => {
   const response = await axiosInstance.get(urls.getPosts, {

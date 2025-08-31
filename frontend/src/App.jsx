@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Authentication from "./components/Auth";
 import { getLoggedInUser, refreshUserToken } from "./components/Auth/handlers";
 import CreatePost from "./components/Posts/CreatePost";
@@ -11,19 +11,27 @@ import { API_TOKEN_KEY } from "./utils/axiosInstance";
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { userDetails, setUserDetails } = useContext(UserContext);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const { userFound } = userDetails;
 
   useEffect(() => {
-    if (!["/login", "/signup"].includes(location.pathname)) {
+    if (tokenRefreshed) return;
+    const isAuthPage = ["/login", "/signup"].includes(location.pathname);
+
+    if (!isAuthPage) {
       refreshUserToken()
+        .then(() => setTokenRefreshed(true))
         .then(() => getUserDetails())
         .catch(() => {
           setUserDetails((prev) => ({ ...prev, userFound: false }));
           localStorage.removeItem(API_TOKEN_KEY);
         });
+    } else if (isAuthPage && localStorage.getItem(API_TOKEN_KEY)) {
+      navigate("/", { replace: true, state: { refresh: true } });
     }
-  }, []);
+  }, [tokenRefreshed, navigate]);
 
   const getUserDetails = async () => {
     try {
@@ -33,6 +41,8 @@ function App() {
       setUserDetails((prev) => ({ ...prev, userFound: false }));
     }
   };
+
+  console.log(userDetails);
 
   return (
     <Routes>

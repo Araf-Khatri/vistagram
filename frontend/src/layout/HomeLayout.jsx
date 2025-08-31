@@ -1,13 +1,13 @@
-import ConfirmationPopup from "@/common/ConfirmationPopup";
-import { showErrorToast, showSuccessToast } from "@/common/toast";
-import { logoutHandler } from "@/components/Auth/handlers";
-import UserContext from "@/context/userContext";
 import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import ConfirmationPopup from "../common/ConfirmationPopup";
+import { showErrorToast, showSuccessToast } from "../common/toast";
+import { logoutHandler } from "../components/Auth/handlers";
+import UserContext from "../context/userContext";
 
 const AppContainer = styled.div`
   position: relative;

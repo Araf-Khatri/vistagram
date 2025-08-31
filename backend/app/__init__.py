@@ -22,7 +22,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=Config.JWT_ACCESS_TOKEN_
 jwt = JWTManager(app)
 
 CORS(app, supports_credentials=True, origins=[
-  "https://vistagram-by-araf.netlify.app", "http://localhost:5173"
+  "https://vistagram-by-araf.netlify.app", "http://localhost:5173", Config.FRONTEND_URL
 ])
 
 
