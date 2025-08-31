@@ -5,7 +5,7 @@ import { getLoggedInUser, refreshUserToken } from "./components/Auth/handlers";
 import CreatePost from "./components/Posts/CreatePost";
 import PostListing from "./components/Posts/PostListing";
 import SharedPost from "./components/Posts/SharedPost";
-import UserContext from "./context/userContext";
+import UserContext from "./context/UserContext";
 import HomeLayout from "./layout/HomeLayout";
 import { API_TOKEN_KEY } from "./utils/axiosInstance";
 

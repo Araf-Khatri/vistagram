@@ -8,7 +8,7 @@ import {
   Label,
 } from "../../common/styles";
 import { showErrorToast, showSuccessToast } from "../../common/toast";
-import UserContext from "../../context/userContext";
+import UserContext from "../../context/UserContext";
 import { loginHandler } from "./handlers";
 
 export default function LoginForm() {

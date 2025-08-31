@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: flask_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=run.py
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=adminaccess4postg
+      - JWT_SECRET_KEY=this-is-a-secret-key
+      - JWT_ACCESS_TOKEN_EXPIRES_DAYS=7
+      - URL_HASH_SECRET=dev_sharable_link_hash_secret
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: vistagram_db_dev
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://127.0.0.1:5000/v1
+      - VITE_APP_NAME=Vistagram
+      - VITE_CLOUDINARY_CLOUD_NAME=da8qkmwfc
+      - VITE_CLOUDINARY_API_KEY=788816714345857
+      - VITE_CLOUDINARY_API_SECRET=TDQjgvs-KNK1IT_1H9N5Eoiw4GU
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -7,7 +7,7 @@ import styled from "styled-components";
 import ConfirmationPopup from "../common/ConfirmationPopup";
 import { showErrorToast, showSuccessToast } from "../common/toast";
 import { logoutHandler } from "../components/Auth/handlers";
-import UserContext from "../context/userContext";
+import UserContext from "../context/UserContext";
 
 const AppContainer = styled.div`
   position: relative;

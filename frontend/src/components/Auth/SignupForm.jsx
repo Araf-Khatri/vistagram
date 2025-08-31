@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../common/toast";
-import UserContext from "../../context/userContext";
+import UserContext from "../../context/UserContext";
 import {
   Button,
   FieldGroup,
