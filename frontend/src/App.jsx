@@ -58,6 +58,7 @@ function App() {
           <Route path="/" element={<PostListing />} />
         </Route>
       )}
+      {!tokenRefreshed && <Route path="*" element={<div>Loading...</div>} />}
     </Routes>
   );
 }
