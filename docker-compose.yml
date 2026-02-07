@@ -3,7 +3,7 @@ services:
     build: ./backend
     container_name: flask_backend
     ports:
-      - "5000:5000"
+      - "4000:5000"
     environment:
       - FLASK_ENV=development
       - FLASK_APP=run.py
@@ -20,12 +20,12 @@ services:
       - db
 
   db:
-    image: postgres:latest
+    image: postgres:17
     container_name: vistagram_db_dev
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: adminaccess4postg
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
@@ -38,7 +38,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://127.0.0.1:5000/v1
+      - VITE_API_URL=http://127.0.0.1:4000/v1
       - VITE_APP_NAME=Vistagram
       - VITE_CLOUDINARY_CLOUD_NAME=da8qkmwfc
       - VITE_CLOUDINARY_API_KEY=788816714345857
