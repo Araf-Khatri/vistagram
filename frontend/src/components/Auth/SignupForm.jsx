@@ -1,4 +1,5 @@
-import { useState } from "react";
+import UserContext from "@/context/UserContext";
+import { useContext, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../common/toast";
 import {
@@ -13,6 +14,7 @@ import { signupHandler } from "./handlers";
 export default function SignupForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { setUserDetails } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -35,8 +37,10 @@ export default function SignupForm() {
 
       await signupHandler(credentials);
       const redirectUrl = searchParams.get("redirect") || "/";
-
-      setTimeout(() => navigate(redirectUrl, { replace: true }), 1000);
+      setTimeout(() => {
+        navigate(redirectUrl, { replace: true });
+        setUserDetails((prev) => ({ ...prev, userFound: true }));
+      }, 1000);
       showSuccessToast({ message: "Welcome! You’ve successfully signed in." });
     } catch (err) {
       const errMessage = err?.response?.data?.message;
